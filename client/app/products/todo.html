@@ -6,6 +6,7 @@
   <div class="collapse-todo">
     <ul>
       <li ng-repeat="item in todoItems">
+        <i ng-if="item.cssClass" class="{{item.cssClass}}"></i>
         <a href="#" ng-click="doTodo(item)">{{item.title}}</a>
       </li>
     </ul>

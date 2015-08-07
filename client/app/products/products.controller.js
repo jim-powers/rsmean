@@ -9,18 +9,17 @@
         return input.charAt(0).toUpperCase() + input.substr(1).toLowerCase();
       };
     })
-   .controller('ProductsCtrl', function($scope, $state, $http, uiGridConstants, $modal) {
-      document.title = document.title + ' - ' + $state.current.name;
-      function prepareDataForGrid(data) {
-        data.forEach(function(row, index) {
-          row.myNumber = index;
-          row.status = Math.floor(Math.random() * 100);
-        });
-        return data;
-      }
-
-      var productsApiUrl = 'api/v1/products';
-
+   .controller('ProductsCtrl', function($scope, $state, $http, uiGridConstants, flashService, $modal, ProductsStore) {
+      document.title = 'Source Intelligence&reg; - ' + $state.current.name;
+      $scope.ps = new ProductsStore();
+      $scope.loadProducts = function() {
+        $scope.ps.findAll()
+          .success(function(data/*, status, headers, config*/) {
+            console.log('Controller returned something');
+            $scope.gridOptions.data = data; // prepareDataForGrid(data);
+          });
+      };
+      $scope.loadProducts();
       // Some initial columns for a product, typically this would be in some model
       $scope.columns = [
         {
@@ -34,11 +33,6 @@
         {id : 'color', displayName : 'Color', width : '75px', visible : true},
         {id : 'style', displayName : 'Style', width : '50px', visible : false}
       ];
-      // get all the products
-      $http.get(productsApiUrl)
-        .success(function(data/*, status, headers, config*/) {
-          $scope.gridOptions.data = prepareDataForGrid(data);
-        });
       // CRUD operations for a product
       $scope.createProduct = function() {
         var modalInstance = $modal.open({
@@ -60,15 +54,10 @@
         });
         modalInstance.result.then(function(selectedItem) {
           $scope.selected = selectedItem;
-          var data = selectedItem.product;
-          delete data._id;
-          $http.post(productsApiUrl, data)
+          $scope.ps.updateRecord(selectedItem.product)
             .success(function(/*data, status, headers, config*/) {
-              $scope.formData = {}; // clear the form so our user is ready to enter another
-              $http.get(productsApiUrl)
-                .success(function(data/*, status, headers, config*/) {
-                  $scope.gridOptions.data = prepareDataForGrid(data);
-                });
+              flashService.push({template : 'Product created', level : 'success'});
+              $scope.loadProducts();
             });
         }, function() {
           //console.log('Modal dismissed at: ' + new Date());
@@ -94,14 +83,10 @@
         });
         modalInstance.result.then(function(selectedItem) {
           $scope.selected = selectedItem;
-          var data = selectedItem.product;
-          $http.put(productsApiUrl + '/' + data._id, data)
+          $scope.ps.updateRecord(selectedItem.product)
             .success(function(/*data, status, headers, config*/) {
-              $scope.formData = {}; // clear the form so our user is ready to enter another
-              $http.get('products')
-                .success(function(data/*, status, headers, config*/) {
-                  $scope.gridOptions.data = prepareDataForGrid(data);
-                });
+              flashService.push({template : 'Product updated', level : 'success'});
+              $scope.loadProducts();
             });
         }, function() {
           //console.log('Modal dismissed at: ' + new Date());
@@ -110,23 +95,12 @@
       $scope.deleteProduct = function(row) {
         var rowId = row.entity._id;
         if (rowId) {
-          $http.delete(productsApiUrl + '/' + rowId)
+          $scope.ps.deleteRecord(rowId)
             .success(function(/*data, status, headers, config*/) {
-              $scope.formData = {}; // clear the form so our user is ready to enter another
-              $http.get('products')
-                .success(function(data/*, status, headers, config*/) {
-                  $scope.gridOptions.data = prepareDataForGrid(data);
-                });
+              flashService.push({template : 'Product deleted', level : 'success'});
+              $scope.loadProducts();
             });
         }
-      };
-      $scope.addManyProducts = function(num) {
-        var numExistingProducts = $scope.gridOptions.data.length;
-        for (var i = 0; i < num; i++) {
-          var n = Math.floor(Math.random() * numExistingProducts);
-          $scope.gridOptions.data.push(angular.copy($scope.gridOptions.data[n]));
-        }
-        prepareDataForGrid($scope.gridOptions.data);
       };
       $scope.displayWtUnits = 1;
       $scope._productWt = function(product) {
@@ -154,12 +128,6 @@
         return $scope._productWt(product).toString();
       };
 
-      // Demo on how to call controller function from the grid: note: grid.appScope.onDblClickRow(row)
-      $scope.onDblClickRow = function(/*rowItem*/) {
-        $scope.gridOptions.columnDefs[5].visible = false;
-        $scope.grid2Api.core.notifyDataChange(uiGridConstants.dataChange.COLUMN);
-      };
-
       /*jshint multistr: true */
       function rowTemplate() {
         var template =
@@ -179,8 +147,17 @@
         onRegisterApi     : function(gridApi) {
           $scope.grid2Api = gridApi;
         },
-        rowTemplate       : rowTemplate(),
+        // rowTemplate       : rowTemplate(),
         columnDefs        : [
+          {
+            displayName: '',
+            field: 'isFmdComplete',
+            sort: {
+              priority: 1
+            },
+            width: 30,
+            cellTemplate : '<div class="ui-grid-cell-contents"><i ng-class="{\'icon-complete\': row.entity.isFmdComplete, \'icon-incomplete\': !row.entity.isFmdComplete }"></i></div>'
+          },
           {
             name         : 'Actions',
             field        : 'actions',
@@ -188,33 +165,14 @@
             pinnedRight  : true,
             cellTemplate : '<div class="ui-grid-cell-contents button-cell"><i class="fa fa-edit" style="margin: 0 5px;" ng-click="grid.appScope.editProduct(row)" ></i><i class="fa fa-remove" style="margin: 0 5px;" ng-click="grid.appScope.deleteProduct(row)"></i></div>'
           },
-          //{
-          //  field            : 'myNumber',
-          //  sort             : {
-          //    direction : uiGridConstants.ASC,
-          //    priority  : 0
-          //  },
-          //  sortingAlgorithm : function(a, b) {
-          //    var n1 = parseInt(a, 10);
-          //    var n2 = parseInt(b, 10);
-          //    return (n1 > n2) ? 1 : (n2 > n1) ? -1 : 0; //n1 - n2;
-          //  }
-          //},
-          //{
-          //  field: '_id',
-          //},
-          //{
-          //  field        : 'status',
-          //  sort         : {},
-          //  cellTemplate : '<progressbar class="progress-striped active" max="100" value="row.entity.status" type="success"> <span style="color:black; white-space:nowrap;">{{row.entity.status}}%</span> </progressbar>'
-          //},
+
           {
             displayName  : 'Product Name',
             field        : 'name',
             sort         : {
               priority : 1
             },
-            cellTemplate : '<div><a ui-sref="app.product({id: row.entity._id})">{{row.entity.name}}</a></div>',
+            cellTemplate : '<div class="ui-grid-cell-contents"><a ui-sref="app.product({id: row.entity._id})">{{row.entity.name}}</a></div>',
             width        : 200
           },
           {
@@ -224,6 +182,11 @@
               priority : 1
             }
             //width : 100
+          },
+          {
+            displayName: 'WT',
+            field: 'wt',
+            cellTemplate: '<div class="ui-grid-cell-contents">{{row.entity.wt}}</div>'
           },
           {
             displayName: 'Weight',
@@ -255,8 +218,12 @@
     $scope.metaInfo = {
       name: { type: 'text', required: true, placeholder: 'Enter the product name'},
       id: { type: 'text', required: true, placeholder: 'Enter the product id'},
-      color: { type: 'text', required: false },
+      color: { type: 'text', required: true },
       style: { type: 'text', required: false }
+    };
+    $scope.filterMetaInfo = function(obj) {
+      console.log(obj);
+      return metaInfo[obj];
     };
     $scope.selected = {
       product : $scope.product

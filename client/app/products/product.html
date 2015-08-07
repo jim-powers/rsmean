@@ -25,13 +25,13 @@
              on-save="saveProductName(newValue, oldValue, event)">
         </div>
         <div>
-          Weight: <span >{{displayProductWt()}}</span>
+          Weight: <span>{{displayProductWt()}}</span>
           <select name="wtUnits" style="width: 75px; display:inline;" ng-model="displayWtUnits">
             <option ng-repeat="(optKey, optVal) in substanceUnitsMetaInfo"
                     ng-selected="optVal == displayWtUnits" value="{{optVal}}">{{optKey}}
             </option>
           </select>
-      </div>
+        </div>
         <ng-include src="'app/products/todo.html'"></ng-include>
       </div>
     </div>
@@ -47,7 +47,7 @@
           <button type="button" ng-click="allowUpdateFmd()" class="btn btn-default">
             Modify FMD
           </button>
-          </div>
+        </div>
       </div>
       <div ng-if="!product.isFmdComplete">
         <div class="pull-left">

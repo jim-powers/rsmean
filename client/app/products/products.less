@@ -1,10 +1,17 @@
 // don't need all the vertical lines in the table
 .rs-products {
+
   // ui-grid
   .ui-grid-cell {
     border: none;
   }
-
+  // don't want everything to be bold
+  .ui-grid-tree-header-row {
+    font-weight: normal !important;
+  }
+  .has-component {
+    margin-left: 17px;
+  }
   .button-cell {
     display: none;
   }
@@ -26,36 +33,74 @@
     }
   }
 
-  // inline-edit styles
-  .icon-edit {
+  .icon-product {
+    .glyphicon;
+    .glyphicon-book;
+  }
+  .icon-component {
+    .glyphicon;
+    .glyphicon-fire;
+    color: #008e0f;
+  }
+  .icon-homogenous {
+    .glyphicon;
+    .glyphicon-oil;
+    color: #45818e;
+  }
+  .icon-alternate {
+    .glyphicon;
+    .glyphicon-link;
+    color: #2a5815;
+  }
+  .icon-substance {
+    .glyphicon;
+    .glyphicon-tint;
+    color: #3f6578;
+  }
+  .icon-complete {
     .fa;
     &:before {
-      content: "\f044";
+      content: "\f058";
     }
+    color: green;
   }
-  .icon-save {
-    .btn;
-    .btn-xs;
-    .btn-success;
-    margin: 0 5px;
-    &:after {
-      content: "Save";
+  .icon-incomplete {
+    .fa;
+    &:before {
+      content: "\f071";
     }
+    color: orange;
   }
-  .icon-cancel {
-    .btn;
-    .btn-xs;
-    .btn-default;
-    &:after {
-      content: "Cancel";
-    }
-  }
-
-  [contenteditable] { display: inline; }
-  [contenteditable="true"] { padding: 0px; outline: 2px dotted #CCC; }
-  [contenteditable="true"]:hover { outline: 2px dashed #0090D2; }
-
 }
+
+// inline-edit styles
+.icon-edit {
+  .fa;
+  &:before {
+    content: "\f044";
+  }
+}
+.icon-save {
+  .btn;
+  .btn-xs;
+  .btn-success;
+  margin: 0 5px;
+  &:after {
+    content: "Save";
+  }
+}
+.icon-cancel {
+  .btn;
+  .btn-xs;
+  .btn-default;
+  &:after {
+    content: "Cancel";
+  }
+}
+
+[contenteditable] { display: inline; }
+[contenteditable="true"] { padding: 0px; outline: 2px dotted #CCC; }
+[contenteditable="true"]:hover { outline: 2px dashed #0090D2; }
 
 @todo-item-color: black;
 .todo-header {
@@ -71,7 +116,7 @@
     margin-top: 10px;
     padding: 0 0 0px 10px;
     li {
-      margin-left: 17px;
+//      margin-left: 17px;
       &.completed {
         margin-left: 0px;
         &:before {

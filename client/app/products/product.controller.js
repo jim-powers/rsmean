@@ -7,11 +7,11 @@
    * @ngInject
    * @constructor
    */
-  function ProductCtrl($scope, $state, uiGridConstants, uiGridGroupingConstants, uiGridTreeViewConstants, $http, flashService, $modal /*, PocDataModel*/) {
-    document.title = document.title + ' - ' + $state.current.name;
+  function ProductCtrl($scope, $state, uiGridConstants, uiGridGroupingConstants, uiGridTreeViewConstants, $http, flashService, $modal, ProductsStore) {
+    document.title = 'Source Intelligence&reg; - ' + $state.current.name;
     var productsApiUrl = 'api/v1/products';
     $scope.todoItems = [
-      { title: 'Provide FMD', completed: false }
+      { title: 'Provide FMD', completed: false, cssClass: 'icon-incomplete' }
     ];
     $scope.doTodo = function(item) {
       console.log(item);
@@ -44,9 +44,9 @@
     // Normal javascript Number object results in rounding errors, try 6 kg, 3 g and 3 mg for the 3 substance weight
     // The display value in kg comes out as: 6.0030030000000005
     // Uses big.js but if you ng-bind="productWt()", angularjs watches this function and gets all tweaked by $digest cycles
-    $scope._productWt = function(product) {
+    $scope._productWt = function(substances) {
       try {
-        var wt = _.reduce(product.substances, function(previousValue, currentValue) {
+        var wt = _.reduce(substances, function(previousValue, currentValue) {
           if (currentValue.wt && currentValue.wtUnits) {
             var n = Big(currentValue.wt);
             var nUnits = Big(currentValue.wtUnits);
@@ -66,15 +66,15 @@
       return Big(0);
     };
     $scope.productWt = function() {
-      return $scope._productWt($scope.product);
+      return $scope._productWt($scope.product.substances);
     };
     $scope.displayProductWt = function() {
-      return $scope.productWt().toString();
+      return ($scope.product.wt) ? Big($scope.product.wt).div(Big($scope.displayWtUnits)).toString() : '';
     };
     $scope.getWtPct = function(wt, wtUnits) {
       try {
         if (wt && wtUnits) {
-          var wtProduct = $scope.productWt();
+          var wtProduct = $scope.product.wt; // $scope.productWt();
           if (wtProduct) {
             return Big(100).times(Big(wt).times(Big(wtUnits)).div(wtProduct));
           }
@@ -91,26 +91,103 @@
       return Big(10000).times($scope.getWtPct(wt, wtUnits));
     };
     $scope.displayWtPpm = function(wt, wtUnits) {
-      return $scope.getWtPpm(wt, wtUnits).toString();
+      return $scope.getWtPpm(wt, wtUnits).round().toString();
     };
-    $http.get(productsApiUrl + '/' + $state.params.id)
-      .success(function(data/*, status, headers, config*/) {
-        $scope.product = data[0];
-        $scope.product.wt = $scope.productWt();
-        $scope.productName = $scope.product.name;
-        $scope.product.substances = $scope.product.substances || [];
-        var treeData = [];
-        for (var i=0; i < $scope.product.substances.length; i++) {
-          if (0 === i%3) {
-            treeData.push({name: 'component ' + i, wt: ''+i});
-            treeData[treeData.length-1].$$treeLevel = 0;
+    function buildComponent(c) {
+      var wt = $scope._productWt(c.substances);
+      c.wt = wt.toString();
+      c.wtUnits = 1;
+      return c;
+    }
+    var NO_COMPONENT = '_none';
+    function getComponents(substances) {
+      var components = {};
+      if (substances.length > 0) {
+        var sub;
+        var i;
+        for (i = 0; i < substances.length; i++) {
+          sub = substances[i];
+          if (sub.component) {
+            if (!components[sub.component]) {
+              components[sub.component] = {
+                name       : sub.component,
+                wt         : 0,
+                substances : [sub]
+              }
+            } else {
+              components[sub.component].substances.push(sub);
+            }
+          } else {
+            if (!components[NO_COMPONENT]) {
+              components[NO_COMPONENT] = {name : NO_COMPONENT, wt : 0, substances : []};
+            } else {
+              components[NO_COMPONENT].substances.push(sub);
+            }
           }
-          treeData.push($scope.product.substances[i])
-          treeData[treeData.length-1].$$treeLevel = 1;
         }
-        //$scope.product.substances[2].$$treeLevel = 2;
-        $scope.gridOptions2.data = treeData; //$scope.product.substances;
-      });
+        angular.forEach(components, function(value, key) {
+          components[key] = buildComponent(value);
+        });
+      }
+      return components;
+    }
+    function getTreeData(substances) {
+      var treeData = [];
+      var components = getComponents(substances);
+      if (substances.length > 0) {
+        var sub;
+        var i;
+        var treeLevel = 0;
+        angular.forEach(components, function(value, key) {
+          if (key !== NO_COMPONENT) {
+            treeData.push(value);
+            treeData[treeData.length - 1].type = 'component';
+            treeData[treeData.length - 1].$$treeLevel = 0;
+            treeLevel = 1;
+          } else {
+            treeLevel = 0;
+          }
+          for (i=0; i < value.substances.length; i++) {
+            sub = value.substances[i];
+            try {
+              sub._wtPctOfComponent = Big(100).times(Big(sub.wt).div(Big(value.wt)));
+              sub.wtPctOfComponent = sub._wtPctOfComponent.toString();
+              sub.ppmOfComponent = (Big(10000).times(sub._wtPctOfComponent).round()).toString();
+            } catch (e) {
+
+            }
+            treeData.push(sub);
+            treeData[treeData.length - 1].type = 'substance';
+            treeData[treeData.length - 1].$$treeLevel = treeLevel;
+          }
+        });
+      }
+      return treeData;
+    }
+    $scope.ps = new ProductsStore();
+    $scope.loadProduct = function() {
+      $scope.ps.find($state.params.id)
+        .success(function(data/*, status, headers, config*/) {
+          console.log('Controller returned something');
+          $scope.product = data[0];
+          $scope.product.wt = $scope.productWt();
+          $scope.productName = $scope.product.name;
+          $scope.product.substances = $scope.product.substances || [];
+          var treeData = getTreeData($scope.product.substances);
+          $scope.gridOptions2.data = treeData; //$scope.product.substances;
+        });
+    };
+    $scope.loadProduct();
+
+    //$http.get(productsApiUrl + '/' + $state.params.id)
+    //  .success(function(data/*, status, headers, config*/) {
+    //    $scope.product = data[0];
+    //    $scope.product.wt = $scope.productWt();
+    //    $scope.productName = $scope.product.name;
+    //    $scope.product.substances = $scope.product.substances || [];
+    //    var treeData = getTreeData($scope.product.substances);
+    //    $scope.gridOptions2.data = treeData; //$scope.product.substances;
+    //  });
     $scope.updateProduct = function(data) {
       $http.put(productsApiUrl + '/' + data._id, data)
         .success(function(/*data, status, headers, config*/) {
@@ -205,6 +282,9 @@
             substance              : function() {
               return row.entity;
             },
+            components : function () {
+              return _.keys(getComponents($scope.product.substances));
+            },
             substanceUnitsMetaInfo : function() {
               return $scope.substanceUnitsMetaInfo;
             },
@@ -263,6 +343,9 @@
           columns    : function() {
             return $scope.columns;
           },
+          components : function () {
+            return _.keys(getComponents($scope.product.substances));
+          },
           substance    : function() {
             return null; // {name : '', cas: ''};
           },
@@ -305,10 +388,12 @@
       return template;
     }
     $scope.gridOptions2 = {
+      // ui-grid-selection is incompatible with tree view
+      // multiSelect: true,
       enableSorting: true,
       enableScrollbars : true,
       enableHorizontalScrollbar: uiGridConstants.scrollbars.ALWAYS,
-      //enableColumnMenus: false,
+      enableColumnMenus: false,
       enableColumnResizing: true,
       treeRowHeaderAlwaysVisible: false,
       showTreeExpandNoChildren: false,
@@ -316,7 +401,6 @@
         $scope.grid2Api = gridApi;
       },
       displayUnits: $scope.substanceUnitsMetaInfo,
-      //rowHeight: 100,
       rowTemplate: rowTemplate(),
       columnDefs: [
         {
@@ -327,18 +411,12 @@
           cellTemplate : '<div class="ui-grid-cell-contents button-cell"><i class="fa fa-edit" style="margin: 0 5px;" ng-click="grid.appScope.editRow(row)" ></i><i class="fa fa-remove" style="margin: 0 5px;" ng-click="grid.appScope.removeRow(row)"></i></div>'
         },
         {
-          name: 'state',
-          grouping: { groupPriority: 0 },
-          sort: { priority: 0, direction: 'desc' },
-          //width: '35%',
-          cellTemplate: '<div><div ng-if="!col.grouping || col.grouping.groupPriority === undefined || col.grouping.groupPriority === null || ( row.groupHeader && col.grouping.groupPriority === row.treeLevel )" class="ui-grid-cell-contents" title="TOOLTIP">{{COL_FIELD CUSTOM_FILTERS}}</div></div>'
-        },
-        {
           field: 'name',
           sort: {
             priority: 1
           },
-          width: 200
+          width: 200,
+          cellTemplate : '<div class="ui-grid-cell-contents" ng-class="{\'has-component\': row.entity.component}"><i class="icon-{{row.entity.type}}"></i> {{row.entity.name}}</div>'
         },
         {
           field: 'cas',
@@ -357,12 +435,20 @@
           cellTemplate : '<div class="ui-grid-cell-contents">{{row.entity.wt}} {{grid.appScope.getDisplayUnits(row.entity.wtUnits)}}</div>',
         },
         {
-          displayName: 'wt1',
-          field: 'wt',
+          displayName: 'wtPctOfComponent',
+          field: 'wtPctOfComponent',
           //width: '25%',
-          treeAggregationType: uiGridTreeViewConstants.aggregation.SUM,
+          //treeAggregationType: uiGridTreeViewConstants.aggregation.SUM,
           //cellFilter: 'currency',
-          cellTemplate: '<div class="ui-grid-cell-contents" title="TOOLTIP"><span>{{row.entity.wt CUSTOM_FILTERS}}</span><span ng-if="row.entity[\'$$\' + col.uid]"> ({{row.entity["$$" + col.uid].value CUSTOM_FILTERS}})</span></div>'
+          //cellTemplate: '<div class="ui-grid-cell-contents" title="TOOLTIP"><span>{{row.entity.wt CUSTOM_FILTERS}}</span><span ng-if="row.entity[\'$$\' + col.uid]"> ({{row.entity["$$" + col.uid].value CUSTOM_FILTERS}})</span></div>'
+        },
+        {
+          displayName: 'ppmOfComponent',
+          field: 'ppmOfComponent',
+          //width: '25%',
+          //treeAggregationType: uiGridTreeViewConstants.aggregation.SUM,
+          //cellFilter: 'currency',
+          //cellTemplate: '<div class="ui-grid-cell-contents" title="TOOLTIP"><span>{{row.entity.wt CUSTOM_FILTERS}}</span><span ng-if="row.entity[\'$$\' + col.uid]"> ({{row.entity["$$" + col.uid].value CUSTOM_FILTERS}})</span></div>'
         },
         {
           field: 'wt',
@@ -385,13 +471,14 @@
    * @ngInject
    * @constructor
    */
-  function ProductSubstanceModalInstanceCtrl($scope, $http, $modalInstance, modalTitle, substance, columns, substanceUnitsMetaInfo, onContinue) {
+  function ProductSubstanceModalInstanceCtrl($scope, $http, $modalInstance, modalTitle, substance, components, columns, substanceUnitsMetaInfo, onContinue) {
     $scope.modalTitle = modalTitle;
     $scope.substance = substance;
     $scope.columns = columns;
     $scope.model = substance;
     $scope.onContinue = onContinue;
     $scope.substanceUnitsMetaInfo = substanceUnitsMetaInfo;
+    $scope.components = components;
     $scope.mySelectedSubstance = substance;
     $scope.metaInfo = {
       name: { type: 'text', required: true, placeholder: 'Enter the product name'},

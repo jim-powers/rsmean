@@ -6,7 +6,7 @@ angular.module('rsmeanApp', [
   'ngSanitize',
   'ui.router',
   'ui.bootstrap',
-  'ui.grid', 'ui.grid.pinning', 'ui.grid.resizeColumns', 'ui.grid.grouping', 'ui.grid.treeView',
+  'ui.grid', 'ui.grid.pinning', 'ui.grid.resizeColumns', 'ui.grid.grouping', 'ui.grid.treeView', 'ui.grid.selection',
   's44.styleguide.flash',
   's44.styleguide.util',
   's44.styleguide.form'
