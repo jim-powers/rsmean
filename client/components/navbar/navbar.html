@@ -1,0 +1,43 @@
+<nav class="navbar si-global-topbar navbar-default navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle"
+              data-toggle="collapse" data-target="#navbar-collapse">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand si-brand-squiggle" href="#/">
+        <img width="40" height="40" s44-cdn="/images/logos/si_logo_squiggle_flat_x_130.png" />
+      </a>
+    </div>
+
+    <div class="collapse navbar-collapse" id="navbar-collapse">
+      <ui-view name="navbar-left"></ui-view>
+      <ui-view name="navbar-right"></ui-view>
+    </div>
+  </div>
+</nav>
+
+
+<div class="navbar navbar-default navbar-static-top" ng-controller="NavbarCtrl">
+  <div class="container">
+    <div class="navbar-header">
+      <button class="navbar-toggle" type="button" ng-click="isCollapsed = !isCollapsed">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a href="/" class="navbar-brand">rsmean</a>
+    </div>
+    <div collapse="isCollapsed" class="navbar-collapse collapse" id="navbar-main">
+      <ul class="nav navbar-nav">
+        <li ng-repeat="item in menu" ng-class="{active: isActive(item.link)}">
+          <a ng-href="{{item.link}}">{{item.title}}</a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</div>

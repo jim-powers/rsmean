@@ -1,0 +1,119 @@
+// don't need all the vertical lines in the table
+.rs-products {
+  // ui-grid
+  .ui-grid-cell {
+    border: none;
+  }
+
+  .button-cell {
+    display: none;
+  }
+
+  .ui-grid-row:hover .button-cell {
+    display: inline-block;
+  }
+
+  // product page
+  .product-image {
+    position:relative;
+    .no-image {
+      background-image: url('/bower_components/s44-styleguide/client/assets/images/checker.png');
+      background-repeat: repeat;
+      height: 100px; width: 100px;
+    }
+    img {
+      width: 100px; height:100px;
+    }
+  }
+
+  // inline-edit styles
+  .icon-edit {
+    .fa;
+    &:before {
+      content: "\f044";
+    }
+  }
+  .icon-save {
+    .btn;
+    .btn-xs;
+    .btn-success;
+    margin: 0 5px;
+    &:after {
+      content: "Save";
+    }
+  }
+  .icon-cancel {
+    .btn;
+    .btn-xs;
+    .btn-default;
+    &:after {
+      content: "Cancel";
+    }
+  }
+
+  [contenteditable] { display: inline; }
+  [contenteditable="true"] { padding: 0px; outline: 2px dotted #CCC; }
+  [contenteditable="true"]:hover { outline: 2px dashed #0090D2; }
+
+}
+
+@todo-item-color: black;
+.todo-header {
+  font-size: 18px;
+}
+.collapse-todo {
+  border: solid 1px black;
+  a {
+    color: @todo-item-color;
+  }
+  ul {
+    list-style: none;
+    margin-top: 10px;
+    padding: 0 0 0px 10px;
+    li {
+      margin-left: 17px;
+      &.completed {
+        margin-left: 0px;
+        &:before {
+          .fa;
+          color: @todo-item-color;
+          content: "\f164"; // thumbs up
+        }
+      }
+    }
+  }
+}
+
+.icon-expand-chevron {
+  .fa;
+  &:before {
+    content: "\f0da";
+  }
+}
+.icon-collapse-chevron {
+  .fa;
+  &:before {
+    content: "\f0d7";
+  }
+}
+
+.modal-product {
+  width: 450px;
+}
+
+.button-bar {
+  margin:0;
+  background-color: white;
+  border: #ccc 1px solid;
+  border-bottom: none;
+  button {
+    margin: 10px 0;
+  }
+  .static-text { // make it match a button for layout
+    margin: 10px 0;
+    padding: 6px 12px;
+    font-size: 14px;
+    display: block;
+    line-height: 1.42857143;
+  }
+}

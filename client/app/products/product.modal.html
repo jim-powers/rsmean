@@ -1,0 +1,39 @@
+<script type="text/ng-template" id="productModal.html">
+  <div class="modal-header">
+    <h3 class="modal-title">{{modalTitle}}</h3>
+  </div>
+  <div class="modal-body">
+    <form s44-form name="userForm" novalidate s44-form="{'feedbackOnBlur':true}" class="form-horizontal" novalidate>
+      <div class="row">
+        <div class="col-xs-12 col-xs-offset-0">
+          <fieldset>
+            <div class="form-group"
+                 ng-class="{ 'has-error' : userForm[key].$invalid && !userForm[key].$pristine }"
+                 ng-repeat="(key, value) in model">
+              <label class="col-xs-2 control-label">{{key | capitalize}}</label>
+              <div class="col-xs-10">
+                <select ng-if="metaInfo[key].type === 'select'" name="{{key}}" ng-model="model[key]">
+                  <option ng-repeat="(optKey, optVal) in metaInfo[key].values"
+                          ng-selected="optVal === model[key]" value="{{optVal}}">{{optKey}}
+                  </option>
+                </select>
+                <input ng-if="metaInfo[key].type !== 'select'" type="{{metaInfo[key].type}}" name="{{key}}" class="form-control"
+                       ng-model="model[key]" ng-attr-required="metaInfo[key].required" placeholder="{{metaInfo[key].placeholder}}">
+                <div ng-messages="userForm[key].$error">
+                  <p ng-message="required">{{key | capitalize}} is required.</p>
+                  <p ng-message="number">{{key | capitalize}} must be a number.</p>
+                  <p ng-message="minlength">{{key | capitalize}} is too short.</p>
+                  <p ng-message="maxlength">{{key | capitalize}} is too long.</p>
+                </div>
+              </div>
+            </div>
+          </fieldset>
+        </div>
+      </div>
+    </form>
+  </div>
+  <div class="modal-footer">
+    <button class="btn btn-success pull-right" ng-disabled="userForm.$invalid" ng-click="ok()">Save</button>
+    <button class="btn btn-default pull-left" ng-click="cancel()">Cancel</button>
+  </div>
+</script>

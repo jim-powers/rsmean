@@ -1,0 +1,23 @@
+<div class="rs-products">
+  <div class="row">
+    <div class="col-xs-12">
+      <div class="pull-right" style="margin-bottom: 10px;">
+        <button type="button" ng-click="createProduct()" class="btn btn-default fa fa-plus">
+          Add product
+        </button>
+        <button type="button" ng-click="uploadProducts()" class="btn btn-default fa fa-upload">
+          Upload products
+        </button>
+        <button type="button" ng-click="exportProducts()" class="btn btn-default fa fa-download">
+          Export
+        </button>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-xs-12">
+      <div id="grid2" ui-grid="gridOptions" class="grid" ui-grid-pinning ui-grid-resize-columns></div>
+    </div>
+  </div>
+</div>
+<ui-view name="productModal"></ui-view>
