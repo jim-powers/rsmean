@@ -1,3 +1,6 @@
+// Provides a UI to define products (consisting of components, substances, regulation/spec required information),
+// connect products between companies, and display regulation/spec analysis of products.
+
 'use strict';
 
 angular.module('rsmeanApp', [

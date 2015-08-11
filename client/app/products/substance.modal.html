@@ -14,11 +14,12 @@
                  ng-class="{ 'has-error' : userForm['substance'].$invalid && !userForm['substance'].$pristine }"
               >
               <div class="col-xs-12">
-                <input type="text" name="substance" ng-model="mySelectedSubstance.search" placeholder="Search"
-                       typeahead="substance as substance.name for substance in getSubstances($viewValue)"
+                <input type="text" name='searchSubstance' ng-model="mySelectedSubstance.searchSubstance" placeholder="Search"
+                       typeahead="substance as substance.search for substance in getSubstances($viewValue)"
                        typeahead-loading="loadingSubstances"
                        typeahead-template-url="myCasTemplate.html"
                        typeahead-on-select='onSelect($item, $model, $label)'
+                       autofocus
                        class="form-control">
                 <i ng-show="loadingSubstances" class="glyphicon glyphicon-refresh"></i>
               </div>

@@ -26,7 +26,9 @@ module.exports = function(app) {
   app.use(bodyParser.json());
   app.use(methodOverride());
   app.use(cookieParser());
-  
+
+  app.set('mongo', config.mongo);
+
   if ('production' === env) {
     app.use(favicon(path.join(config.root, 'public', 'favicon.ico')));
     app.use(express.static(path.join(config.root, 'public')));

@@ -14,19 +14,19 @@ var app = express();
 var server = require('http').createServer(app);
 require('./config/express')(app);
 
+console.log('<<<<<<<APP>>>>>>>', app)
+
 var bodyParser = require('body-parser');
 //var multer = require('multer');
 //app.use(multer()); // for parsing multipart/form-data
 app.use(bodyParser.json({limit: '50mb'}));
 app.use(bodyParser.urlencoded({limit: '50mb', extended: true}));
 
-
 require('./routes')(app);
 
-// Use mymongo for the database initially
+// Use mymongo for the database initially -- get connection
 var myMongo = require('./mymongo');
-console.log(myMongo);
-myMongo.connect();
+myMongo.connect({uri: app.get('mongo').uri});
 
 // Start server
 server.listen(config.port, config.ip, function () {

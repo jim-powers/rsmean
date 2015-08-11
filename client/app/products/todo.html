@@ -1,14 +1,16 @@
-<div ng-click="isCollapsed = !isCollapsed" class="todo-header">
-  <i ng-class="{'icon-collapse-chevron':!isCollapsed,'icon-expand-chevron':isCollapsed }"></i>
-  <span>What needs to be done for {{product.name}}?</h5>
-</div>
-<div collapse="isCollapsed">
-  <div class="collapse-todo">
-    <ul>
-      <li ng-repeat="item in todoItems">
-        <i ng-if="item.cssClass" class="{{item.cssClass}}"></i>
-        <a href="#" ng-click="doTodo(item)">{{item.title}}</a>
-      </li>
-    </ul>
+<div class="todo-box">
+  <div ng-click="isCollapsed = !isCollapsed" class="todo-header">
+    <i ng-class="{'icon-collapse-chevron':!isCollapsed,'icon-expand-chevron':isCollapsed }"></i>
+    <span>What needs to be done for {{product.name}}?</span>
+  </div>
+  <div collapse="isCollapsed">
+    <div class="collapse-todo">
+      <ul>
+        <li ng-repeat="item in todoItems">
+          <i ng-class="{'icon-complete': item.isComplete, 'icon-incomplete': !item.isComplete}"></i>
+          <a href="#" ng-click="doTodo(item)">{{item.title}}</a>
+        </li>
+      </ul>
+    </div>
   </div>
 </div>

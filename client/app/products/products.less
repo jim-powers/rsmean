@@ -5,32 +5,53 @@
   .ui-grid-cell {
     border: none;
   }
+
+  // Allows column headers to wrap
+  // It does require the header row to always be a fixed height
+  //  .ui-grid-header-cell .ui-grid-cell-contents {
+  //    height: 48px;
+  //    white-space: normal;
+  //    -ms-text-overflow: clip;
+  //    -o-text-overflow: clip;
+  //    text-overflow: clip;
+  //    overflow: visible;
+  //  }
+
   // don't want everything to be bold
   .ui-grid-tree-header-row {
     font-weight: normal !important;
   }
-  .has-component {
+
+  // this causes tree expanded items to be indented
+  .tree-level-1 {
     margin-left: 17px;
   }
+
+  // This is to hover/show the action cell
   .button-cell {
     display: none;
   }
-
   .ui-grid-row:hover .button-cell {
     display: inline-block;
   }
 
   // product page
   .product-image {
-    position:relative;
+    position: relative;
     .no-image {
       background-image: url('/bower_components/s44-styleguide/client/assets/images/checker.png');
       background-repeat: repeat;
-      height: 100px; width: 100px;
+      height: 100px;
+      width: 100px;
     }
     img {
-      width: 100px; height:100px;
+      width: 100px;
+      height: 100px;
     }
+  }
+
+  .product-title {
+    font-size: 18px;
   }
 
   .icon-product {
@@ -80,6 +101,7 @@
     content: "\f044";
   }
 }
+
 .icon-save {
   .btn;
   .btn-xs;
@@ -89,6 +111,7 @@
     content: "Save";
   }
 }
+
 .icon-cancel {
   .btn;
   .btn-xs;
@@ -98,25 +121,53 @@
   }
 }
 
-[contenteditable] { display: inline; }
-[contenteditable="true"] { padding: 0px; outline: 2px dotted #CCC; }
-[contenteditable="true"]:hover { outline: 2px dashed #0090D2; }
+[contenteditable] {
+  display: inline;
+}
 
+[contenteditable="true"] {
+  padding: 0px;
+  outline: 2px dotted #CCC;
+}
+
+[contenteditable="true"]:hover {
+  outline: 2px dashed #0090D2;
+}
+
+//.btn-s44-highlighted {
+//  .buttonBackground(#ff944d, #e95d0c);
+//  &:focus {
+//    outline-color: darken(#e95d0c, 5%);
+//  }
+//}
+
+// Danger and error appear as red
+.btn-s44-highlighted {
+  .button-variant(@btn-warning-color; @btn-warning-bg; @btn-warning-border);
+}
+
+// To do list
 @todo-item-color: black;
+.todo-box {
+  background-color: #eee;
+  padding: 10px;
+  margin: 10px 0;
+}
+
 .todo-header {
   font-size: 18px;
 }
+
 .collapse-todo {
-  border: solid 1px black;
+//  border: solid 1px black;
   a {
     color: @todo-item-color;
   }
   ul {
     list-style: none;
-    margin-top: 10px;
-    padding: 0 0 0px 10px;
+    margin: 0;
+    padding: 0 0 0px 15px;
     li {
-//      margin-left: 17px;
       &.completed {
         margin-left: 0px;
         &:before {
@@ -135,6 +186,7 @@
     content: "\f0da";
   }
 }
+
 .icon-collapse-chevron {
   .fa;
   &:before {
@@ -142,19 +194,22 @@
   }
 }
 
+// end To do List
+
 .modal-product {
   width: 450px;
 }
 
 .button-bar {
-  margin:0;
+  margin: 0;
   background-color: white;
   border: #ccc 1px solid;
   border-bottom: none;
   button {
     margin: 10px 0;
   }
-  .static-text { // make it match a button for layout
+  .static-text {
+    // make it match a button for layout
     margin: 10px 0;
     padding: 6px 12px;
     font-size: 14px;

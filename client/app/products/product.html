@@ -4,24 +4,8 @@
       <button class="btn btn-default fa fa-download" ng-click="exportProduct()">Export</button>
     </div>
     <div class="row">
-      <div class="col-xs-3">
-        <div class="product-image" style="position:relative;">
-          <div ng-if="product.imageUrl">
-            <img ng-if="product.imageUrl" ng-src="{{product.imageUrl}}" style="width: 100px; height:100px;" />
-          </div>
-          <div ng-if="!product.imageUrl">
-            <div class='no-image' id="productImage"></div>
-          </div>
-        </div>
-        <a href ng-show="!showImageUrlInput" ng-click="showImageUrlInput=true; $event.stopPropagation();" ng-model="showImageInput">Update Image</a>
-        <div ng-show="showImageUrlInput">
-          <input type="text" ng-model="tmpImageUrl" placeholder="Image URL" />
-          <button class="btn btn-sm btn-success" ng-click="saveImageUrl(tmpImageUrl); showImageUrlInput=false">Make it so</button>
-          <button class="btn btn-sm btn-default" ng-click="showImageUrlInput=false">Cancel</button>
-        </div>
-      </div>
       <div class="col-xs-9">
-        <div s44-contenteditable value="product.name"
+        <div class="product-title" s44-contenteditable value="product.name"
              on-save="saveProductName(newValue, oldValue, event)">
         </div>
         <div>
@@ -51,7 +35,7 @@
       </div>
       <div ng-if="!product.isFmdComplete">
         <div class="pull-left">
-          <button type="button" ng-click="addSubstance()" class="btn btn-default fa fa-plus">
+          <button type="button" ng-click="addSubstance()" class="btn btn-s44-highlighted btn-default fa fa-plus ">
             Add substance
           </button>
           <button type="button" ng-click="uploadSubstance()" class="btn btn-default fa fa-upload">

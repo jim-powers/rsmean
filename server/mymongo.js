@@ -7,8 +7,8 @@ var mongodb = require('mongodb');
 var MongoClient = mongodb.MongoClient;
 
 // Connection URL. This is where your mongodb server is running.
-var defaultUrl = 'mongodb://localhost:27017/mydb';
-var _db ;
+var defaultUri = 'mongodb://localhost:27017/quantum';
+var _db = null;
 
 module.exports = {
   getMongoDbDriver : function() {
@@ -18,19 +18,20 @@ module.exports = {
     return MongoClient;
   },
   connect: function(options) {
-    var url = (options && options.url) ? options.url : defaultUrl;
+    var url = (options && options.uri) ? options.uri : defaultUri;
     MongoClient.connect(url, function(err, db){
       if (err) {
         console.log('Unable to connect to the mongoDB server. Error:', err);
       } else {
-        //HURRAY!! We are connected. :)
         console.log('Connection established to', url);
-        //console.log(db);
         _db = db;
       }
     })
   },
   getDb: function() {
+    if (! _db) {
+      this.connect();
+    }
     return _db;
   },
   close: function() {
@@ -39,7 +40,7 @@ module.exports = {
     }
   },
   find: function(collectionName, data, cb) {
-    var collection = _db.collection(collectionName);
+    var collection = this.getDb().collection(collectionName);
     console.log(data);
     collection.find(data).toArray(function(err, result) {
       if (err) {
@@ -53,7 +54,7 @@ module.exports = {
     })
   },
   insert: function(collectionName, data, cb) {
-    var collection = _db.collection(collectionName);
+    var collection = this.getDb().collection(collectionName);
     collection.insert([data], function (err, result) {
       if (err) {
         console.log(err);
@@ -66,7 +67,7 @@ module.exports = {
     });
   },
   update: function(collectionName, query, data, cb) {
-    var collection = _db.collection(collectionName);
+    var collection = this.getDb().collection(collectionName);
     collection.update(query, data, function (err, result) {
       if (err) {
         console.log(err);
@@ -79,7 +80,7 @@ module.exports = {
     });
   },
   remove: function(collectionName, data, cb) {
-    var collection = _db.collection(collectionName);
+    var collection = this.getDb().collection(collectionName);
     console.log('Remove:');
     console.log(data);
     collection.remove(data, function (err, result) {
