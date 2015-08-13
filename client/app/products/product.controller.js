@@ -14,7 +14,6 @@
 
     $scope.todoItems = [ ];
     $scope.doTodo = function(item) {
-      console.log(item);
     };
     $scope.product = {_id : $state.params.id, name : 'my product', substances : []};
     $scope.productName = $scope.product.name;
@@ -137,6 +136,9 @@
               } catch (e) {
 
               }
+            } else {
+              delete sub.wtPctOfComponent;
+              delete sub.ppmOfComponent;
             }
             treeData.push(sub);
             treeData[treeData.length - 1].type = 'substance';
@@ -147,12 +149,10 @@
       return treeData;
     }
 
-    $scope.ps = ProductsStore;
     $scope.loadProduct = function() {
-      $scope.ps.find($state.params.id)
+      ProductsStore.find($state.params.id)
         .success(function(data/*, status, headers, config*/) {
           $scope.product = data[0];
-          //$scope.product.wt = $scope.productWt();
           $scope.product.substances = $scope.product.substances || [];
           var treeData = getTreeData($scope.product.substances);
           $scope.gridOptions2.data = treeData; //$scope.product.substances;
@@ -165,7 +165,7 @@
     $scope.loadProduct();
 
     $scope.updateProduct = function(data) {
-      $http.put(productsApiUrl + '/' + data._id, data)
+      ProductsStore.updateRecord(data)
         .success(function(/*data, status, headers, config*/) {
           $scope.loadProduct();
           flashService.push({template : 'Product updated', level : 'success'});
@@ -246,8 +246,8 @@
             substance              : function() {
               return row.entity;
             },
-            components             : function() {
-              return _.keys(getComponents($scope.product.substances));
+            getComponents             : function() {
+              return function() { return _.keys(getComponents($scope.product.substances)) } ;
             },
             substanceUnitsMetaInfo : function() {
               return $scope.substanceUnitsMetaInfo;
@@ -290,8 +290,11 @@
           columns                : function() {
             return $scope.columns;
           },
-          components             : function() {
-            return _.keys(getComponents($scope.product.substances));
+          //components             : function() {
+          //  return _.keys(getComponents($scope.product.substances));
+          //},
+          getComponents             : function() {
+            return function() { return _.keys(getComponents($scope.product.substances)) } ;
           },
           substance              : function() {
             return null; // {name : '', cas: ''};
@@ -326,14 +329,11 @@
     }
 
     $scope.gridOptions2 = {
-      // ui-grid-selection is incompatible with tree view
-      // multiSelect: true,
       enableSorting              : true,
-      enableScrollbars           : true,
-      enableHorizontalScrollbar  : uiGridConstants.scrollbars.ALWAYS,
       enableColumnMenus          : false,
       enableColumnResizing       : true,
       treeRowHeaderAlwaysVisible : false,
+      // ui-grid-selection is incompatible with tree view
       showTreeExpandNoChildren   : false,
       onRegisterApi              : function(gridApi) {
         $scope.grid2Api = gridApi;

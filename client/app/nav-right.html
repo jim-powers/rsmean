@@ -1,0 +1,21 @@
+<script type="text/ng-template" id="dropdown.html">
+  <ul class="dropdown-menu" role="menu" aria-labelledby="button-template-url">
+    <li role="menuitem"><a ui-sref="settings">Settings</a></li>
+    <li role="menuitem"><a ui-sref="logout">Sign out</a></li>
+  </ul>
+</script>
+
+<ul class="nav navbar-nav">
+  <li ui-sref-active="active"><button class="btn btn-success" style="margin-top:5px;" ui-sref="help">Help</button></li>
+  <span dropdown on-toggle="toggled(open)" style="float:left; margin:12px;">
+    <div dropdown-toggle>
+      <a href id="simple-dropdown">
+        {{username}}
+      </a>
+      <i class="fa fa-caret-down"></i>
+    </div>
+    <ul class="dropdown-menu" template-url="dropdown.html" aria-labelledby="button-template-url">
+    </ul>
+  </span>
+</ul>
+

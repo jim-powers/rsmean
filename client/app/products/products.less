@@ -78,20 +78,6 @@
     .glyphicon-tint;
     color: #3f6578;
   }
-  .icon-complete {
-    .fa;
-    &:before {
-      content: "\f058";
-    }
-    color: green;
-  }
-  .icon-incomplete {
-    .fa;
-    &:before {
-      content: "\f071";
-    }
-    color: orange;
-  }
 }
 
 // inline-edit styles
@@ -142,44 +128,6 @@
 //}
 
 // Danger and error appear as red
-.btn-s44-highlighted {
-  .button-variant(@btn-warning-color; @btn-warning-bg; @btn-warning-border);
-}
-
-// To do list
-@todo-item-color: black;
-.todo-box {
-  background-color: #eee;
-  padding: 10px;
-  margin: 10px 0;
-}
-
-.todo-header {
-  font-size: 18px;
-}
-
-.collapse-todo {
-//  border: solid 1px black;
-  a {
-    color: @todo-item-color;
-  }
-  ul {
-    list-style: none;
-    margin: 0;
-    padding: 0 0 0px 15px;
-    li {
-      &.completed {
-        margin-left: 0px;
-        &:before {
-          .fa;
-          color: @todo-item-color;
-          content: "\f164"; // thumbs up
-        }
-      }
-    }
-  }
-}
-
 .icon-expand-chevron {
   .fa;
   &:before {
@@ -198,22 +146,4 @@
 
 .modal-product {
   width: 450px;
-}
-
-.button-bar {
-  margin: 0;
-  background-color: white;
-  border: #ccc 1px solid;
-  border-bottom: none;
-  button {
-    margin: 10px 0;
-  }
-  .static-text {
-    // make it match a button for layout
-    margin: 10px 0;
-    padding: 6px 12px;
-    font-size: 14px;
-    display: block;
-    line-height: 1.42857143;
-  }
 }

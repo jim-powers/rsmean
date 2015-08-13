@@ -2,10 +2,13 @@
 
 angular.module('rsmeanApp')
   .controller('MainCtrl', function ($scope, $http) {
-    $scope.awesomeThings = [];
-
-    $http.get('/api/things').success(function(awesomeThings) {
-      $scope.awesomeThings = awesomeThings;
-    });
-
+    var todoApiUrl = 'api/v1/todo';
+    $scope.todoItems = [ ];
+    $http.get(todoApiUrl)
+      .success(function(data/*, status, headers, config*/) {
+        $scope.todoItems = [
+          {title : 'Add products', isComplete : false },
+          {title : 'Match customer products', isComplete : false }
+        ];
+      });
   });

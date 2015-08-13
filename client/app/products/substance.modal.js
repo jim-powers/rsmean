@@ -5,14 +5,14 @@
    * @ngInject
    * @constructor
    */
-  function ProductSubstanceModalInstanceCtrl($scope, $http, $modalInstance, modalTitle, substance, components, columns, substanceUnitsMetaInfo, onContinue) {
+  function ProductSubstanceModalInstanceCtrl($scope, $http, $modalInstance, modalTitle, substance, getComponents, columns, substanceUnitsMetaInfo, onContinue) {
     $scope.modalTitle = modalTitle;
     $scope.substance = substance;
     $scope.columns = columns;
     $scope.model = substance;
     $scope.onContinue = onContinue;
     $scope.substanceUnitsMetaInfo = substanceUnitsMetaInfo;
-    $scope.components = components;
+    $scope.components = getComponents();
     $scope.mySelectedSubstance = substance;
     $scope.getSubstances = function(val) {
       return $http.get('/api/v1/substances?q=' + val)
@@ -40,6 +40,7 @@
         $scope.onContinue($scope.mySelectedSubstance);
       }
       delete $scope.mySelectedSubstance;
+      $scope.components = getComponents(); // re-calc components
       $scope.userForm.$setPristine();
       // clear these hard-coded fields -- substance is narrowly defined (at the moment)
       _.each(['cas', 'name', 'wt'], function(element) {

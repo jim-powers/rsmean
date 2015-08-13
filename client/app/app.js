@@ -32,10 +32,16 @@ angular.module('rsmeanApp', [
             controller: 'FlashController'
           },
           'navbar@': {
-            templateUrl: 'bower_components/s44-styleguide/client/components/layout/navbar/navbar.html'
+            controller: 'NavbarCtrl',
+            templateUrl: 'components/navbar/navbar.html'
           },
           'navbar-left@app': {
-            templateUrl: 'app/nav.html'
+            controller: 'NavbarCtrl',
+            templateUrl: 'app/nav-left.html'
+          },
+          'navbar-right@app': {
+            controller: 'NavbarCtrl',
+            templateUrl: 'app/nav-right.html'
           },
           'footer@': {
             templateUrl: 'bower_components/s44-styleguide/client/components/layout/footer/footer.html'

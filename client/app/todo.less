@@ -1,0 +1,48 @@
+// To do list
+@todo-item-color: black;
+.todo-box {
+  background-color: #eee;
+  padding: 10px;
+  margin: 10px 0;
+}
+
+.todo-header {
+  font-size: 18px;
+}
+
+.collapse-todo {
+  //  border: solid 1px black;
+  a {
+    color: @todo-item-color;
+  }
+  ul {
+    list-style: none;
+    margin: 0;
+    padding: 0 0 0px 15px;
+    li {
+      &.completed {
+        margin-left: 0px;
+        &:before {
+          .fa;
+          color: @todo-item-color;
+          content: "\f164"; // thumbs up
+        }
+      }
+    }
+  }
+}
+
+.icon-complete {
+  .fa;
+  &:before {
+    content: "\f058";
+  }
+  color: green;
+}
+.icon-incomplete {
+  .fa;
+  &:before {
+    content: "\f071";
+  }
+  color: orange;
+}

@@ -14,8 +14,6 @@ var app = express();
 var server = require('http').createServer(app);
 require('./config/express')(app);
 
-console.log('<<<<<<<APP>>>>>>>', app)
-
 var bodyParser = require('body-parser');
 //var multer = require('multer');
 //app.use(multer()); // for parsing multipart/form-data

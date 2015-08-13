@@ -24,6 +24,7 @@ module.exports = function(config) {
       'client/bower_components/angular-ui-router/release/angular-ui-router.js',
       'client/bower_components/angular-ui-grid/ui-grid.js',
       'client/bower_components/s44-styleguide/lib/s44-styleguide.js',
+      'client/bower_components/big.js/big.js',
       'client/app/app.js',
       //'client/app/app.coffee',
       'client/app/**/*.js',

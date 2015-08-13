@@ -1,26 +1,25 @@
-<header class="hero-unit" id="banner">
-  <div class="container">
-    <h1>'Allo, 'Allo!</h1>
-    <p class="lead">Kick-start your next web app with Angular Fullstack</p>
-    <img src="assets/images/yeoman.png" alt="I'm Yeoman">
-  </div>
-</header>
-
-<div class="container">
-  <div class="row">
-    <div class="col-lg-12">
-      <h1 class="page-header">Features:</h1>
-      <ul class="nav nav-tabs nav-stacked col-md-4 col-lg-4 col-sm-6" ng-repeat="thing in awesomeThings">
-        <li><a href="#" tooltip="{{thing.info}}">{{thing.name}}</a></li>
-      </ul>
+<div class="row">
+  <div class="col-xs-8">
+    <div class="row col-xs-12 hero-unit">
+      <div class="col-xs-2" style="padding:0">
+        <div class="thumbnail-box">
+          <img class="thumbnail" s44-cdn="/images/logos/si_logo_squiggle_flat_x_130.png" />
+        </div>
+      </div>
+      <div class="col-xs-10" style="padding: 0 0 0 40px;">
+        <p style="text-align: left">
+          <strong>Source Intelligence&reg;</strong> has requested information about your company’s products for their Restricted Substances Compliance Program
+        </p>
+        <p style="text-align: left">
+          <a ui-sref-active="active" ui-sref="app.products" class="btn btn-success" data-loading-text="Go&nbsp;<i class=&quot;icon-arrow-right icon-white&quot;></i>">
+            <i class="icon-arrow-right icon-white"></i>&nbsp;Go</a>
+          </a>
+        </p>
+      </div>
     </div>
   </div>
-</div>
-
-<footer class="footer">
-  <div class="container">
-      <p>Angular Fullstack v2.1.1 |
-        <a href="https://twitter.com/tyhenkel">@tyhenkel</a> |
-         <a href="https://github.com/DaftMonk/generator-angular-fullstack/issues?state=open">Issues</a></p>
+  <div class="col-xs-4">
+    <ng-include src="'app/main/main.sidebar.html'"></ng-include>
   </div>
-</footer>
+</div>
+</div>

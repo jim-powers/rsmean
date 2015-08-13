@@ -46,8 +46,6 @@ var all = {
 
 };
 
-console.log('>>>>>>>>>>>>>config', all.mongo)
-
 // Export the config object based on the NODE_ENV
 // ==============================================
 module.exports = _.merge(

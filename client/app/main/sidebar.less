@@ -1,0 +1,57 @@
+.theme-rs-sidebar {
+  .row {
+    margin-left: 0;
+  }
+  .padding8 {
+    padding: 8px;
+  }
+  section,
+  .section {
+    background: white;
+    margin-bottom: 10px;
+    position: relative;
+    .box-shadow(0 0 1px #999);
+    border-radius: 6px;
+
+    h4,
+    h5 {
+      font-size: 14px;
+      .clearfix();
+      &.absolute {
+        position: absolute;
+      }
+      strong {
+        .pull-left;
+        background: #333;
+        color: white;
+        text-transform: uppercase;
+        font-weight: normal;
+        padding: 6px 15px;
+        margin-bottom: 10px;
+        border-radius: 0;
+      }
+    }
+
+    h5 strong {
+      padding: 5px 10px; // shrink the padding a little
+      border-right: 1px solid #DDD;
+      border-bottom: 1px solid #DDD;
+      color: #888;
+      background: whiteSmoke;
+    }
+
+    table {
+      margin-bottom: 10px;
+    }
+
+    .page-header {
+      margin: 0 0 18px 0;
+      padding: 17px 10px;
+    }
+
+    &.section-standard,
+    .section-standard {
+      padding: 0 10px;
+    }
+  }
+}

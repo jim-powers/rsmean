@@ -1,7 +1,5 @@
 'use strict';
 
-console.log('>>>>>DEV CONFI>>>>')
-
 // Development specific configuration
 // ==================================
 module.exports = {
